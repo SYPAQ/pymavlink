@@ -300,23 +300,16 @@ class Opts(object):
 
 def mavgen_python_dialect(dialect, wire_protocol):
     '''generate the python code on the fly for a MAVLink dialect'''
-    dialects = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'dialects')
-    mdef = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', '..', 'message_definitions')
+    dialects = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'dialects', 'message_definitions')
     if wire_protocol == mavparse.PROTOCOL_0_9:
-        py = os.path.join(dialects, 'v09', dialect + '.py')
-        xml = os.path.join(dialects, 'v09', dialect + '.xml')
-        if not os.path.exists(xml):
-            xml = os.path.join(mdef, 'v0.9', dialect + '.xml')
+        py = os.path.join(dialects, 'v0.9', dialect + '.py')
+        xml = os.path.join(dialects, 'v0.9', dialect + '.xml')
     elif wire_protocol == mavparse.PROTOCOL_1_0:
-        py = os.path.join(dialects, 'v10', dialect + '.py')
-        xml = os.path.join(dialects, 'v10', dialect + '.xml')
-        if not os.path.exists(xml):
-            xml = os.path.join(mdef, 'v1.0', dialect + '.xml')
+        py = os.path.join(dialects, 'v1.0', dialect + '.py')
+        xml = os.path.join(dialects, 'v1.0', dialect + '.xml')
     else:
-        py = os.path.join(dialects, 'v20', dialect + '.py')
-        xml = os.path.join(dialects, 'v20', dialect + '.xml')
-        if not os.path.exists(xml):
-            xml = os.path.join(mdef, 'v1.0', dialect + '.xml')
+        py = os.path.join(dialects, 'v2.0', dialect + '.py')
+        xml = os.path.join(dialects, 'v2.0', dialect + '.xml')
     opts = Opts(py, wire_protocol)
 
     # Python 2 to 3 compatibility

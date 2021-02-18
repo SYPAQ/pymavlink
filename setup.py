@@ -31,11 +31,25 @@ def generate_content():
                       os.path.join('message_definitions'),
         ]
 
+    mdef_path = None
+    ext_path = None
     for path in mdef_paths:
-        mdef_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), path)
-        if os.path.exists(mdef_path):
-            print("Using message definitions from %s" % mdef_path)
+        path = os.path.join(os.path.dirname(os.path.realpath(__file__)), path)
+        if os.path.exists(path):
+            mdef_path = os.path.abspath(path)
+            ext_path = os.path.join(mdef_path, '..', 'external')
+            ext_path = os.path.abspath(ext_path)
+            print("Using core message definitions from:  %s" % mdef_path)
+            print("Using external message dialects from: %s" % ext_path)
             break
+
+    if mdef_path is None:
+        print("Error: couldn't find core mavlink message definitions")
+        sys.exit(1)
+
+    if ext_path is None:
+        print("Error: couldn't find mavlink external dialects")
+        sys.exit(1)
 
     dialects_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'dialects')
 
@@ -47,13 +61,25 @@ def generate_content():
     should_generate = not "NOGEN" in os.environ
     if should_generate:
         if len(v10_dialects) == 0:
-            print("No XML message definitions found")
+            print("No v1.0 XML message definitions found")
+            sys.exit(1)
+        if len(v20_dialects) == 0:
+            print("No v2.0 XML message definitions found")
             sys.exit(1)
 
+        # blow away any existing definitions
+        shutil.rmtree(dialects_path)
+
+        shutil.copytree(ext_path, os.path.join(dialects_path, 'external'))
+
+        p = os.path.join(dialects_path, 'message_definitions', 'v1.0')
+        os.makedirs(p)
         for xml in v10_dialects:
-            shutil.copy(xml, os.path.join(dialects_path, 'v10'))
+            shutil.copy(xml, p)
+        p = os.path.join(dialects_path, 'message_definitions', 'v2.0')
+        os.makedirs(p)
         for xml in v20_dialects:
-            shutil.copy(xml, os.path.join(dialects_path, 'v20'))
+            shutil.copy(xml, p)
 
         for xml in v10_dialects:
             dialect = os.path.basename(xml)[:-4]
