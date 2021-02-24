@@ -147,8 +147,8 @@ This `custom_mode_map.json` file can be used to:
   - add a mapping for an unsupported vehicle type (e.g. add a mapping for `MAV_TYPE_AIRSHIP` (`enum` value of `7`) vehicles).
 
 Notes:
+  - This feature _replaces_ the default definitions for a vehicle `MAV_TYPE`. As such, you need to define the number-to-name mapping for _every_ supported mode, not just the one you wish to change.
   - Whilst the `MAV_TYPE` and mode numbers are integers, they need to be defined as `string`s in the JSON file, as raw integers can't be used as dictionary keys in JSON.
-  - This feature _updates_ the default definitions. You can use it to change the name-to-number mapping for a mode, but you completely can't remove an existing mapping.
 
 
 # License
